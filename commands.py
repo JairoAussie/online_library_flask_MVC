@@ -1,5 +1,6 @@
 from flask import Blueprint
 from main import db
+from main import bcrypt
 from models.author import Author
 from models.book import Book
 from models.user import User
@@ -25,9 +26,10 @@ def seed_db():
     user1 = User(
         username = "jairo",
         email = "jairo@email.com",
-        password = "12345678"
+        password = bcrypt.generate_password_hash("12345678").decode("utf-8")
     )
 
+    db.session.add(user1)    
     author1 = Author(
         name = "Haruki Murakami",
         country = "Japan",
