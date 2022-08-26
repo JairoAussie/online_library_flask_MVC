@@ -34,3 +34,22 @@ def new_book():
     db.session.commit()
     return jsonify(book_schema.dump(book))
 
+@books.route("/<int:id>", methods=["PUT"])
+def update_book(id):
+    #find the book in the database
+    book = Book.query.get(id)
+    #check if book exist in the database
+    if not book:
+        return {"error": "Book id not found in the database"}
+    #get the book details from the request
+    book_fields = book_schema.load(request.json)
+    #upodate the values of the book
+    book.title = book_fields["title"]
+    book.genre = book_fields["genre"]
+    book.length = book_fields["length"]
+    book.year = book_fields["year"]
+
+    #save changes in the database
+    db.session.commit() 
+
+    return jsonify(book_schema.dump(book))   

@@ -2,6 +2,7 @@ from flask import Blueprint
 from main import db
 from models.author import Author
 from models.book import Book
+from models.user import User
 from datetime import date
 
 
@@ -21,6 +22,12 @@ def drop_db():
 
 @db_commands.cli.command('seed')
 def seed_db():
+    user1 = User(
+        username = "jairo",
+        email = "jairo@email.com",
+        password = "12345678"
+    )
+
     author1 = Author(
         name = "Haruki Murakami",
         country = "Japan",
