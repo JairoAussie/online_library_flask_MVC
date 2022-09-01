@@ -6,6 +6,8 @@ from main import jwt
 from flask_jwt_extended import create_access_token
 from models.user import User
 from schemas.user_schema import user_schema
+from models.librarian import Librarian
+from schemas.librarian_schema import librarian_schema
 
 auth = Blueprint('auth', __name__, url_prefix="/auth")
 
@@ -38,3 +40,39 @@ def register_user():
     token = create_access_token(identity=str(user.user_id), expires_delta=timedelta(days=1)) 
 
     return {"username": user.username, "token": token}
+
+#Login user POST
+@auth.route("/login",methods = ["POST"])
+def login_user():
+    # Get username and password fron the request
+    user_fields = user_schema.load(request.json)
+    # Check username and password. User needs to exist, and password needs to match
+    user = User.query.filter_by(username=user_fields["username"]).first()
+    if not user:
+        return {"error": "username is not valid"}
+    
+    if not bcrypt.check_password_hash(user.password, user_fields["password"]):
+        return {"error": "wrong password"}
+    # Credentials are valid, so generate token and return it to the user
+
+    token = create_access_token(identity=str(user.user_id), expires_delta=timedelta(days=1)) 
+
+    return {"username": user.username, "token": token}
+
+#Login librarian POST
+@auth.route("/librarian/login",methods = ["POST"])
+def login_librarian():
+    # Get username and password fron the request
+    librarian_fields = librarian_schema.load(request.json)
+    # Check username and password. User needs to exist, and password needs to match
+    librarian = Librarian.query.filter_by(username=librarian_fields["username"]).first()
+    if not librarian:
+        return {"error": "username is not valid"}
+    
+    if not bcrypt.check_password_hash(librarian.password, librarian_fields["password"]):
+        return {"error": "wrong password"}
+    # Credentials are valid, so generate token and return it to the user
+
+    token = create_access_token(identity="librarian", expires_delta=timedelta(days=1)) 
+
+    return {"library": librarian.username, "token": token}

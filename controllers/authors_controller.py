@@ -2,6 +2,7 @@ from flask import Blueprint, jsonify, request
 from main import db
 from models.author import Author
 from schemas.author_schema import author_schema, authors_schema
+from flask_jwt_extended import jwt_required
 
 authors = Blueprint('authors', __name__, url_prefix="/authors")
 
@@ -29,6 +30,7 @@ def get_author(id):
 
 #POST an author
 @authors.route("/", methods=["POST"])
+@jwt_required()
 def create_author():
     #get the values from the request and load them with the single schema
     author_fields = author_schema.load(request.json)
@@ -47,6 +49,7 @@ def create_author():
 
 #DELETE and author
 @authors.route("/<int:id>", methods=["DELETE"])
+@jwt_required()
 def delete_author(id):
     #search author by id (primary key)
     author = Author.query.get(id)

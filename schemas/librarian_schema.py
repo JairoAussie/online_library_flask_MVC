@@ -8,4 +8,4 @@ class LibrarianSchema(ma.Schema):
     password = ma.String(validate=Length(min=8))
 
 #just the single schema for log in purposes
-libraian_schema = LibrarianSchema()
+librarian_schema = LibrarianSchema()
