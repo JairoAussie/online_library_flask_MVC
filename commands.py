@@ -5,6 +5,7 @@ from models.author import Author
 from models.book import Book
 from models.user import User
 from models.librarian import Librarian
+from models.reservation import Reservation
 from datetime import date
 
 
@@ -71,12 +72,17 @@ def seed_db():
     )
 
     db.session.add(author3)
+    # We need the author_id for the book's foreign key.
+    #We don't get id's until we commit to the database
+    db.session.commit()
 
     book1 = Book(
         title = "1Q84",
         genre = "Novel",
         year = 2009,
-        length = 928
+        length = 928,
+        #add the id explicitly
+        author_id = author1.author_id
     )
     db.session.add(book1)
 
@@ -84,7 +90,9 @@ def seed_db():
         title = "Norwegian Wood",
         genre = "Novel",
         year = 1995,
-        length = 296
+        length = 296,
+        #add the object, SQLAlchemy will handle it
+        author = author1
     )
     db.session.add(book2)
 
@@ -92,7 +100,8 @@ def seed_db():
         title = "Alias Grace",
         genre = "Fiction",
         year = 1996,
-        length = 470
+        length = 470,
+        author = author2
     )
     db.session.add(book3)
 
@@ -100,7 +109,8 @@ def seed_db():
         title = "The Handmaid's Tale",
         genre = "Science Fiction",
         year = 1985,
-        length = 311
+        length = 311,
+        author = author2
     )
     db.session.add(book4)
 
@@ -108,9 +118,19 @@ def seed_db():
         title = "The Hand of the Red October",
         genre = "Fiction",
         year = 1984,
-        length = 387
+        length = 387,
+        author = author3
     )
     db.session.add(book5)
 
     db.session.commit()
+
+    reservation1 = Reservation(
+        start_date = date.today(),
+        book = book2,
+        user = user1
+    )
+    db.session.add(reservation1)
+    db.session.commit()
+    
     print("tables seeded")

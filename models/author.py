@@ -8,5 +8,9 @@ class Author(db.Model):
     name = db.Column(db.String())
     country = db.Column(db.String())
     dob = db.Column(db.Date())
+    books = db.relationship(
+        "Book",
+        backref= "author"
+    )
 
 

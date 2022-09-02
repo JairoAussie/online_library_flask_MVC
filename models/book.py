@@ -7,3 +7,9 @@ class Book(db.Model):
     genre = db.Column(db.String())
     length = db.Column(db.Integer())
     year = db.Column(db.Integer())
+    author_id = db.Column(db.Integer, db.ForeignKey("authors.author_id"))
+    reservations = db.relationship(
+        "Reservation",
+        backref = "book",
+        cascade="all, delete"
+    )
