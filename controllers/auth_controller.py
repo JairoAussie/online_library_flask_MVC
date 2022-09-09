@@ -8,6 +8,7 @@ from models.user import User
 from schemas.user_schema import user_schema
 from models.librarian import Librarian
 from schemas.librarian_schema import librarian_schema
+from marshmallow.exceptions import ValidationError
 
 auth = Blueprint('auth', __name__, url_prefix="/auth")
 
@@ -76,3 +77,9 @@ def login_librarian():
     token = create_access_token(identity="librarian", expires_delta=timedelta(days=1)) 
 
     return {"library": librarian.username, "token": token}
+
+
+@auth.errorhandler(ValidationError)
+def register_validation_error(error):
+    #print(error.messages)
+    return error.messages, 400
